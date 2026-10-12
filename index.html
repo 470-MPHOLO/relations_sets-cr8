@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cre8Learn Institute: Relations and Sets Portal</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #eef1ec;
+    --surface: #ffffff;
+    --surface-2: #f4f7f1;
+    --border: #d3dbcf;
+    --accent: #2f6fb5;
+    --accent-dim: #4f8cd0;
+    --gold: #b08d1e;
+    --green: #2d8a4a;
+    --red: #c0392b;
+    --text: #1a1a1a;
+    --text-dim: #555555;
+    --mono: "Courier New", Courier, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    line-height: 1.65;
+    min-height: 100vh;
+  }
+
+  .topbar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    flex-wrap: wrap;
+    gap: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  .brand {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .brand .inst {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-family: var(--mono);
+    width: 100%;
+    margin-bottom: -4px;
+    font-weight: bold;
+  }
+  .brand .name {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.3px;
+  }
+  .brand .sub {
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+  .tabs {
+    display: flex;
+    gap: 6px;
+    background: var(--surface-2);
+    border-radius: 8px;
+    padding: 4px;
+    border: 1px solid var(--border);
+  }
+  .tab {
+    background: transparent;
+    border: none;
+    color: var(--text-dim);
+    padding: 9px 20px;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    font-weight: 500;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active {
+    background: var(--accent);
+    color: #fff;
+    font-weight: 600;
+  }
+
+  .container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 28px 24px 80px;
+  }
+  .view { display: none; }
+  .view.active { display: block; }
+
+  .portal-intro {
+    background: linear-gradient(135deg, #f4f8f2 0%, #ffffff 100%);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px 30px;
+    margin-bottom: 26px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+  }
+  .portal-intro .inst-tag {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+    display: block;
+    font-weight: bold;
+  }
+  .portal-intro h1 {
+    font-size: 24px;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+  .portal-intro p {
+    color: var(--text-dim);
+    font-size: 14px;
+    max-width: 720px;
+  }
+  .portal-intro .beginners {
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: #fffdf4;
+    border-left: 3px solid var(--gold);
+    border-radius: 0 4px 4px 0;
+    font-size: 13.5px;
+    color: var(--text-dim);
+  }
+
+  .section-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 18px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+  }
+  .section-header {
+    padding: 18px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .section-header .label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    display: block;
+    margin-bottom: 3px;
+    font-weight: bold;
+  }
+  .section-header h3 {
+    font-size: 16px;
+    color: var(--text);
+    font-weight: 600;
+  }
+  .section-header .toggle {
+    color: var(--accent);
+    font-size: 20px;
+    transition: transform 0.25s;
+    flex-shrink: 0;
+  }
+  .section-card.open .toggle { transform: rotate(45deg); }
+
+  .section-body {
+    display: none;
+    padding: 4px 24px 22px;
+    border-top: 1px solid var(--border);
+  }
+  .section-card.open .section-body { display: block; }
+
+  .topic {
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .topic:last-child { border-bottom: none; }
+  .topic h4 {
+    font-size: 14.5px;
+    color: var(--accent);
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  .topic p, .topic li {
+    font-size: 13.5px;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+  }
+  .topic ul {
+    padding-left: 20px;
+    margin-top: 4px;
+  }
+  .topic strong { color: var(--text); }
+  .topic code {
+    font-family: var(--mono);
+    background: var(--surface-2);
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-size: 12.5px;
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .topic .box {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    background: var(--surface-2);
+    padding: 12px 16px;
+    border-left: 3px solid var(--gold);
+    border-radius: 0 4px 4px 0;
+    color: var(--text);
+    margin: 10px 0;
+    line-height: 1.7;
+    white-space: pre-wrap;
+  }
+  .topic .note {
+    background: #eaf2fb;
+    border-left: 3px solid var(--accent);
+    border-radius: 0 4px 4px 0;
+    padding: 10px 14px;
+    margin: 10px 0;
+    font-size: 13px;
+    color: var(--text);
+  }
+  .topic .warn {
+    background: #fdf0ee;
+    border-left: 3px solid var(--red);
+    border-radius: 0 4px 4px 0;
+    padding: 10px 14px;
+    margin: 10px 0;
+    font-size: 13px;
+    color: var(--text);
+  }
+  .topic .tip {
+    background: #eaf7ee;
+    border-left: 3px solid var(--green);
+    border-radius: 0 4px 4px 0;
+    padding: 10px 14px;
+    margin: 10px 0;
+    font-size: 13px;
+    color: var(--text);
+  }
+  .topic table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 8px 0;
+    font-size: 13px;
+  }
+  .topic table th, .topic table td {
+    text-align: left;
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .topic table th {
+    background: var(--surface-2);
+    font-weight: 600;
+    color: var(--text);
+  }
+  .topic table td { color: var(--text-dim); }
+  .topic .step {
+    background: var(--surface-2);
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin: 8px 0;
+    font-size: 13px;
+    color: var(--text);
+  }
+  .topic .step b {
+    color: var(--accent);
+    display: block;
+    margin-bottom: 4px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .quiz-intro {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 26px 30px;
+    margin-bottom: 22px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+  }
+  .quiz-intro .inst-tag {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 10px;
+    display: block;
+    font-weight: bold;
+  }
+  .quiz-intro h2 {
+    font-size: 20px;
+    margin-bottom: 6px;
+  }
+  .quiz-intro p {
+    color: var(--text-dim);
+    font-size: 13.5px;
+    margin-bottom: 16px;
+  }
+  .quiz-intro .start-btn {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 13px 34px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.15s;
+  }
+  .quiz-intro .start-btn:hover {
+    background: #3a7fc5;
+    box-shadow: 0 0 20px rgba(47, 111, 181, 0.25);
+  }
+  .quiz-intro .start-btn:active { transform: scale(0.98); }
+
+  .q-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 22px 26px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+  }
+  .q-card .meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .q-card .qnum {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--gold);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: bold;
+  }
+  .q-card .topic-tag {
+    font-size: 10px;
+    background: var(--surface-2);
+    color: var(--text-dim);
+    padding: 2px 10px;
+    border-radius: 10px;
+    letter-spacing: 0.5px;
+    border: 1px solid var(--border);
+  }
+  .q-card .qtext {
+    font-size: 15px;
+    color: var(--text);
+    margin-bottom: 16px;
+    font-weight: 500;
+    line-height: 1.55;
+  }
+  .q-options {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+  .q-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 16px;
+    background: var(--surface-2);
+    border: 1px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13.5px;
+    color: var(--text-dim);
+    transition: border-color 0.15s, background 0.15s, color 0.15s;
+  }
+  .q-option:hover {
+    background: #eaf2fb;
+    color: var(--text);
+    border-color: var(--accent-dim);
+  }
+  .q-option .letter {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--border);
+    color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .q-option.selected {
+    border-color: var(--accent);
+    background: rgba(47, 111, 181, 0.08);
+    color: var(--text);
+  }
+  .q-option.selected .letter {
+    background: var(--accent);
+    color: #fff;
+  }
+  .q-option.correct {
+    border-color: var(--green);
+    background: rgba(45, 138, 74, 0.1);
+    color: var(--text);
+  }
+  .q-option.correct .letter {
+    background: var(--green);
+    color: #fff;
+  }
+  .q-option.wrong {
+    border-color: var(--red);
+    background: rgba(192, 57, 43, 0.08);
+    color: var(--text);
+  }
+  .q-option.wrong .letter {
+    background: var(--red);
+    color: #fff;
+  }
+
+  .quiz-controls {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 26px;
+    flex-wrap: wrap;
+  }
+  .btn {
+    font-family: inherit;
+    font-size: 13.5px;
+    padding: 11px 26px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: opacity 0.15s, background 0.15s;
+    border: 1px solid transparent;
+  }
+  .btn:hover { opacity: 0.88; }
+  .btn.primary {
+    background: var(--accent);
+    color: #fff;
+  }
+  .btn.ghost {
+    background: transparent;
+    border-color: var(--border);
+    color: var(--text-dim);
+  }
+  .btn.ghost:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .score-banner {
+    background: linear-gradient(135deg, #f4f8f2 0%, #ffffff 100%);
+    border: 1px solid var(--accent-dim);
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+    margin-top: 26px;
+    display: none;
+    box-shadow: 0 4px 16px rgba(47, 111, 181, 0.08);
+  }
+  .score-banner.show { display: block; }
+  .score-banner .big {
+    font-size: 40px;
+    color: var(--accent);
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+  .score-banner .msg {
+    color: var(--text-dim);
+    font-size: 14px;
+    margin-top: 6px;
+  }
+
+  .progress-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+    font-size: 12.5px;
+    color: var(--text-dim);
+    font-family: var(--mono);
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .bar-outer {
+    flex: 1;
+    min-width: 160px;
+    height: 6px;
+    background: var(--surface-2);
+    border-radius: 3px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .bar-inner {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(to right, var(--accent-dim), var(--accent));
+    transition: width 0.3s;
+  }
+
+  .site-footer {
+    text-align: center;
+    padding: 26px 20px 40px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.5px;
+    border-top: 1px solid var(--border);
+    margin-top: 20px;
+  }
+  .site-footer strong { color: var(--gold); }
+
+  @media (max-width: 640px) {
+    .topbar { padding: 12px 16px; }
+    .container { padding: 20px 16px 60px; }
+    .portal-intro, .quiz-intro { padding: 22px 20px; }
+    .q-card { padding: 18px 18px; }
+    .tab { padding: 8px 14px; font-size: 12px; }
+    .topic table { font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <span class="inst">Cre8Learn Institute</span>
+    <span class="name">Relations and Sets</span>
+    <span class="sub">Mathematics 1 Portal</span>
+  </div>
+  <div class="tabs">
+    <button class="tab active" data-view="study" type="button">Study Portal</button>
+    <button class="tab" data-view="quiz" type="button">Quiz Bank</button>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="view active" id="view-study">
+    <div class="portal-intro">
+      <span class="inst-tag">Cre8Learn Institute</span>
+      <h1>Relations and Sets: Study Portal</h1>
+      <p>This portal is written in slow, simple steps for students who find the topic hard. Every new idea comes with a plain explanation, then a small example, then a tip. Read one section at a time. Do not rush.</p>
+      <div class="beginners">
+        <strong>If you feel lost, start here:</strong> Open Section 1 first. Read it slowly. Then answer the first 8 quiz questions before moving on. The whole topic is built on top of the ideas in Section 1, so do not skip it.
+      </div>
+    </div>
+
+    <div class="section-card open">
+      <div class="section-header">
+        <div>
+          <span class="label">Section 1</span>
+          <h3>What is a Set?</h3>
+        </div>
+        <span class="toggle">+</span>
+      </div>
+      <div class="section-body">
+        <div class="topic">
+          <h4>The Idea in Plain Words</h4>
+          <p>A <strong>set</strong> is just a collection of things. The things inside can be numbers, letters, people, colours, anything. We usually write a set inside curly brackets.</p>
+          <div class="box">Example: A = {1, 2, 3}
+This means A is the set that contains the numbers 1, 2 and 3.</div>
+          <p>The things inside the curly brackets are called the <strong>elements</strong> or members of the set.</p>
+        </div>
+        <div class="topic">
+          <h4>How to Write Sets</h4>
+          <p>There are two common ways to write a set:</p>
+          <ul>
+            <li><strong>Roster method:</strong> list every element. Example: A = {2, 4, 6, 8}.</li>
+            <li><strong>Set builder method:</strong> describe the rule. Example: A = {x : x is an even number less than 10}.</li>
+          </ul>
+          <p>Both mean the same thing. Use the roster method when the list is short. Use set builder when the list would be too long or impossible to write out.</p>
+        </div>
+        <div class="topic">
+          <h4>Belongs To and Does Not Belong To</h4>
+          <p>We use two symbols to say whether something is inside a set:</p>
+          <ul>
+            <li><code>∈</code> means "is an element of" or "belongs to".</li>
+            <li><code>∉</code> means "is not an element of" or "does not belong to".</li>
+          </ul>
+          <div class="box">If A = {1, 2, 3}
+2 ∈ A     (2 belongs to A)
+5 ∉ A     (5 does not belong to A)</div>
+        </div>
+        <div class="topic">
+          <h4>Important Sets You Will Meet Often</h4>
+          <table>
+            <thead><tr><th>Symbol</th><th>Name</th><th>Meaning</th></tr></thead>
+            <tbody>
+              <tr><td>N</td><td>Natural numbers</td><td>Counting numbers: 1, 2, 3, 4, ...</td></tr>
+              <tr><td>W</td><td>Whole numbers</td><td>0, 1, 2, 3, 4, ...</td></tr>
+              <tr><td>Z</td><td>Integers</td><td>..., -2, -1, 0, 1, 2, ...</td></tr>
+              <tr><td>Q</td><td>Rational numbers</td><td>Numbers that can be written as fractions</td></tr>
+              <tr><td>R</td><td>Real numbers</td><td>All numbers on the number line</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="topic">
+          <h4>Empty Set, Finite Set, Infinite Set</h4>
+          <ul>
+            <li><strong>Empty set:</strong> a set with no elements. Written as { } or ∅.</li>
+            <li><strong>Finite set:</strong> a set whose elements you can count and finish. Example: {1, 2, 3}.</li>
+            <li><strong>Infinite set:</strong> a set whose elements never end. Example: {1, 2, 3, 4, ...}.</li>
+          </ul>
+          <div class="tip"><strong>Tip:</strong> The empty set is not the same as the set {0}. The set {0} contains one element, the number 0. The empty set contains nothing at all.</div>
+        </div>
+        <div class="topic">
+          <h4>Subsets</h4>
+          <p>A set B is a <strong>subset</strong> of A if every element of B is also an element of A. We write <code>B ⊆ A</code>.</p>
+          <div class="box">A = {1, 2, 3}
+B = {1, 2}      B ⊆ A because every element of B is in A
+C = {1, 5}      C is NOT a subset of A because 5 is not in A</div>
+          <p>Every set is a subset of itself. The empty set is a subset of every set.</p>
+        </div>
+        <div class="topic">
+          <h4>Universal Set</h4>
+          <p>The <strong>universal set</strong>, usually written as U, is the set that contains everything we are talking about in a particular problem. It is like the background or the whole picture.</p>
+          <div class="box">If we are only talking about numbers 1 to 10, then
+U = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}</div>
+        </div>
+        <div class="topic">
+          <h4>Number of Subsets</h4>
+          <p>If a set has n elements, the total number of subsets it has is 2 raised to the power n.</p>
+          <div class="box">If A = {1, 2, 3}, then n = 3
+Number of subsets = 2^3 = 8
+
+They are:
+{ }             {1, 2}
+{1}             {1, 3}
+{2}             {2, 3}
+{3}             {1, 2, 3}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <div class="section-header">
+        <div>
+          <span class="label">Section 2</span>
+          <h3>Operations on Sets</h3>
+        </div>
+        <span class="toggle">+</span>
+      </div>
+      <div class="section-body">
+        <div class="topic">
+          <h4>Union</h4>
+          <p>The <strong>union</strong> of two sets A and B is a new set that contains everything that is in A, or in B, or in both. Written <code>A ∪ B</code>.</p>
+          <div class="box">A = {1, 2, 3}
+B = {3, 4, 5}
+A ∪ B = {1, 2, 3, 4, 5}</div>
+          <div class="note"><strong>Note:</strong> The number 3 appears in both sets, but we only write it once in the union.</div>
+        </div>
+        <div class="topic">
+          <h4>Intersection</h4>
+          <p>The <strong>intersection</strong> of two sets A and B is a new set that contains only what appears in both sets. Written <code>A ∩ B</code>.</p>
+          <div class="box">A = {1, 2, 3}
+B = {3, 4, 5}
+A ∩ B = {3}</div>
+          <div class="tip"><strong>Tip:</strong> If two sets share nothing, their intersection is the empty set ∅.</div>
+        </div>
+        <div class="topic">
+          <h4>Difference</h4>
+          <p>The <strong>difference</strong> A minus B, written <code>A \ B</code> or <code>A - B</code>, contains everything that is in A but not in B.</p>
+          <div class="box">A = {1, 2, 3, 4}
+B = {3, 4, 5}
+A \ B = {1, 2}
+B \ A = {5}</div>
+          <div class="warn"><strong>Watch out:</strong> A \ B and B \ A are usually not the same. Do not swap them by mistake.</div>
+        </div>
+        <div class="topic">
+          <h4>Complement</h4>
+          <p>The <strong>complement</strong> of a set A, written <code>A'</code> or <code>A<sup>c</sup></code>, contains everything in the universal set U that is not in A.</p>
+          <div class="box">U = {1, 2, 3, 4, 5, 6}
+A = {1, 2, 3}
+A' = {4, 5, 6}</div>
+        </div>
+        <div class="topic">
+          <h4>Cardinality (Size of a Set)</h4>
+          <p>The <strong>cardinality</strong> of a set is the number of elements it contains. Written <code>n(A)</code> or <code>|A|</code>.</p>
+          <div class="box">A = {a, e, i, o, u}
+n(A) = 5</div>
+        </div>
+        <div class="topic">
+          <h4>Cardinality Formula for Two Sets</h4>
+          <p>When you know the sizes and the overlap, use this:</p>
+          <div class="box">n(A ∪ B) = n(A) + n(B) − n(A ∩ B)</div>
+          <p>We subtract the overlap because it was counted twice, once in A and once in B.</p>
+          <div class="box">A = {1, 2, 3, 4}
+B = {3, 4, 5}
+n(A) = 4     n(B) = 3     n(A ∩ B) = 2
+n(A ∪ B) = 4 + 3 − 2 = 5</div>
+        </div>
+        <div class="topic">
+          <h4>Cardinality Formula for Three Sets</h4>
+          <div class="box">n(A ∪ B ∪ C) =
+n(A) + n(B) + n(C)
+− n(A ∩ B) − n(A ∩ C) − n(B ∩ C)
++ n(A ∩ B ∩ C)</div>
+          <div class="note"><strong>Note:</strong> The last term is added back because the middle part was subtracted one time too many.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <div class="section-header">
+        <div>
+          <span class="label">Section 3</span>
+          <h3>What is a Relation?</h3>
+        </div>
+        <span class="toggle">+</span>
+      </div>
+      <div class="section-body">
+        <div class="topic">
+          <h4>The Idea in Plain Words</h4>
+          <p>A <strong>relation</strong> is a rule that connects elements from one set to elements of another set (or the same set). It is like saying "this is related to that".</p>
+          <div class="box">Think of a class of students. "Is the brother of" is a relation.
+"Has the same birthday as" is a relation.
+"Is older than" is a relation.</div>
+        </div>
+        <div class="topic">
+          <h4>Ordered Pairs</h4>
+          <p>Relations are usually written as pairs in round brackets, called <strong>ordered pairs</strong>. The order matters. The pair (1, 2) is not the same as (2, 1).</p>
+          <div class="box">A relation "is less than" on {1, 2, 3} gives:
+(1, 2), (1, 3), (2, 3)
+because 1 < 2, 1 < 3, 2 < 3</div>
+        </div>
+        <div class="topic">
+          <h4>Cartesian Product</h4>
+          <p>The <strong>Cartesian product</strong> A × B is the set of all possible ordered pairs where the first element comes from A and the second comes from B.</p>
+          <div class="box">A = {1, 2}
+B = {x, y}
+A × B = { (1, x), (1, y), (2, x), (2, y) }</div>
+          <p>If A has m elements and B has n elements, then A × B has m times n pairs.</p>
+          <div class="box">If n(A) = 2 and n(B) = 3, then n(A × B) = 6</div>
+        </div>
+        <div class="topic">
+          <h4>Domain and Range</h4>
+          <ul>
+            <li><strong>Domain:</strong> the set of all first elements of the ordered pairs.</li>
+            <li><strong>Range:</strong> the set of all second elements of the ordered pairs.</li>
+          </ul>
+          <div class="box">R = { (1, 2), (2, 4), (3, 6) }
+Domain = {1, 2, 3}
+Range = {2, 4, 6}</div>
+        </div>
+        <div class="topic">
+          <h4>Inverse Relation</h4>
+          <p>The <strong>inverse</strong> of a relation is formed by swapping the elements in each pair. If R is the relation, the inverse is written R with a small minus one on top.</p>
+          <div class="box">R = { (1, 2), (2, 4), (3, 6) }
+R inverse = { (2, 1), (4, 2), (6, 3) }</div>
+          <p>The domain of R becomes the range of the inverse, and the range of R becomes the domain of the inverse.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <div class="section-header">
+        <div>
+          <span class="label">Section 4</span>
+          <h3>Types of Relations</h3>
+        </div>
+        <span class="toggle">+</span>
+      </div>
+      <div class="section-body">
+        <div class="topic">
+          <h4>Reflexive Relation</h4>
+          <p>A relation on a set A is <strong>reflexive</strong> if every element is related to itself. That means every pair (a, a) is in the relation.</p>
+          <div class="box">A = {1, 2, 3}
+R = { (1,1), (2,2), (3,3), (1,2) }
+R is reflexive because (1,1), (2,2) and (3,3) are all present.</div>
+          <div class="tip"><strong>Tip:</strong> To test reflexivity, just look for the "diagonal" pairs. They must all be there.</div>
+        </div>
+        <div class="topic">
+          <h4>Symmetric Relation</h4>
+          <p>A relation is <strong>symmetric</strong> if whenever (a, b) is in the relation, then (b, a) is also in the relation.</p>
+          <div class="box">R = { (1,2), (2,1), (3,4), (4,3) }
+R is symmetric because each pair has its reverse also present.
+
+R = { (1,2), (3,4) }
+R is NOT symmetric because (1,2) has no (2,1).</div>
+        </div>
+        <div class="topic">
+          <h4>Transitive Relation</h4>
+          <p>A relation is <strong>transitive</strong> if whenever (a, b) and (b, c) are in the relation, then (a, c) is also in the relation.</p>
+          <div class="box">R = { (1,2), (2,3), (1,3) }
+R is transitive because (1,2) and (2,3) give (1,3), which is present.
+
+R = { (1,2), (2,3) }
+R is NOT transitive because (1,3) is missing.</div>
+          <div class="warn"><strong>Watch out:</strong> Transitivity is about chains. If you can step from a to b and from b to c, you must also be able to step directly from a to c.</div>
+        </div>
+        <div class="topic">
+          <h4>Equivalence Relation</h4>
+          <p>A relation is an <strong>equivalence relation</strong> if it is reflexive, symmetric and transitive all at once. All three must be true.</p>
+          <div class="box">On the set of integers, "has the same parity as" is an equivalence relation.
+It is reflexive: every number has the same parity as itself.
+It is symmetric: if a has the same parity as b, then b has the same parity as a.
+It is transitive: if a matches b and b matches c, then a matches c.</div>
+        </div>
+        <div class="topic">
+          <h4>Function as a Special Relation</h4>
+          <p>A <strong>function</strong> is a special kind of relation where every element in the domain is paired with exactly one element in the range. No first element repeats with a different partner.</p>
+          <div class="box">This is a function:
+{ (1,2), (2,4), (3,6) }
+
+This is NOT a function:
+{ (1,2), (1,5), (2,4) }
+because 1 is paired with both 2 and 5.</div>
+          <div class="tip"><strong>Tip:</strong> The vertical line test in graphs is really testing this same rule.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <div class="section-header">
+        <div>
+          <span class="label">Section 5</span>
+          <h3>Venn Diagrams and Counting</h3>
+        </div>
+        <span class="toggle">+</span>
+      </div>
+      <div class="section-body">
+        <div class="topic">
+          <h4>What is a Venn Diagram?</h4>
+          <p>A <strong>Venn diagram</strong> is a picture that uses circles to show sets. Overlapping circles show what the sets share. Venn diagrams help you see the whole problem before you do the maths.</p>
+          <div class="box">Draw two overlapping circles and label them A and B.
+The part where they overlap is A ∩ B.
+The whole area covered by the two circles is A ∪ B.
+Everything outside both circles but inside the rectangle is (A ∪ B)'.</div>
+        </div>
+        <div class="topic">
+          <h4>The Counting Method That Always Works</h4>
+          <div class="step"><b>Step 1</b>Draw the Venn diagram with the number of circles equal to the number of sets.</div>
+          <div class="step"><b>Step 2</b>Always fill in the middle region first, the one where all circles overlap.</div>
+          <div class="step"><b>Step 3</b>Work outward. Fill in the overlaps of two circles next.</div>
+          <div class="step"><b>Step 4</b>Then fill in the regions with only one set.</div>
+          <div class="step"><b>Step 5</b>Finally, fill in the outside region (the universal set but not in any circle).</div>
+          <div class="tip"><strong>Tip:</strong> Always check that the numbers in each circle add up to the total given for that set. This catches mistakes.</div>
+        </div>
+        <div class="topic">
+          <h4>Worked Example</h4>
+          <p>In a class of 40 students:</p>
+          <ul>
+            <li>25 study Maths</li>
+            <li>20 study Science</li>
+            <li>10 study both</li>
+          </ul>
+          <p>How many study at least one subject? How many study neither?</p>
+          <div class="box">Let M = Maths and S = Science.
+
+Fill the overlap first:  n(M ∩ S) = 10
+
+Only Maths:   25 − 10 = 15
+Only Science: 20 − 10 = 10
+
+At least one subject:
+n(M ∪ S) = n(M) + n(S) − n(M ∩ S)
+         = 25 + 20 − 10 = 35
+
+Neither subject:
+40 − 35 = 5</div>
+          <div class="note"><strong>Check:</strong> 15 plus 10 plus 10 equals 35. Plus 5 outside equals 40. The numbers match.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <div class="section-header">
+        <div>
+          <span class="label">Section 6</span>
+          <h3>Common Mistakes to Avoid</h3>
+        </div>
+        <span class="toggle">+</span>
+      </div>
+      <div class="section-body">
+        <div class="topic">
+          <h4>Mixing Up Union and Intersection</h4>
+          <p>Union means "everything from both sets, but no duplicates". Intersection means "only what the sets share".</p>
+          <div class="warn"><strong>Remember:</strong> Union looks like the letter U, and union means "united". Intersection looks like a capital n, and intersection means "narrow" or "only the shared part".</div>
+        </div>
+        <div class="topic">
+          <h4>Forgetting That Order Matters in Ordered Pairs</h4>
+          <p>The pair (2, 5) is not the same as (5, 2). This matters in relations, in Cartesian products, and in the inverse of a relation.</p>
+        </div>
+        <div class="topic">
+          <h4>Confusing Reflexive, Symmetric and Transitive</h4>
+          <div class="tip">
+            <strong>Reflexive:</strong> every element relates to itself (the diagonal is full).<br>
+            <strong>Symmetric:</strong> if a relates to b, then b relates to a (the pairs come in both directions).<br>
+            <strong>Transitive:</strong> if a relates to b and b relates to c, then a relates to c (chains complete).
+          </div>
+        </div>
+        <div class="topic">
+          <h4>Double Counting in the Overlap</h4>
+          <p>When you use the formula n(A ∪ B) = n(A) + n(B) − n(A ∩ B), always remember to subtract the overlap. If you forget, you will get an answer that is too big.</p>
+        </div>
+        <div class="topic">
+          <h4>Thinking {0} is the Empty Set</h4>
+          <p>The empty set has zero elements. The set {0} has one element, and that element is the number 0. They are different.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="view" id="view-quiz">
+    <div class="quiz-intro" id="quizStart">
+      <span class="inst-tag">Cre8Learn Institute</span>
+      <h2>Relations and Sets: Quiz Bank</h2>
+      <p>40 questions. The first ten are very easy and gentle. They get harder as you go. Take your time.</p>
+      <button class="start-btn" id="startQuizBtn" type="button">Start Quiz</button>
+    </div>
+
+    <div id="quizArea" style="display:none;">
+      <div class="progress-row">
+        <span id="progressText">0 of 40 answered</span>
+        <div class="bar-outer"><div class="bar-inner" id="progressBar"></div></div>
+      </div>
+      <div id="questions"></div>
+      <div class="quiz-controls">
+        <button class="btn primary" id="checkBtn" type="button">Check Answers</button>
+        <button class="btn ghost" id="resetBtn" type="button">Reset</button>
+      </div>
+      <div class="score-banner" id="scoreBanner">
+        <div class="big" id="scoreBig">0 / 40</div>
+        <div class="msg" id="scoreMsg"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="site-footer">
+  <strong>Cre8Learn Institute</strong> &middot; Relations and Sets &middot; Mathematics 1 &middot; 2025
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var tabs = document.querySelectorAll(".tab");
+  var views = document.querySelectorAll(".view");
+
+  tabs.forEach(function (tab) {
+    tab.addEventListener("click", function () {
+      tabs.forEach(function (t) { t.classList.remove("active"); });
+      views.forEach(function (v) { v.classList.remove("active"); });
+      tab.classList.add("active");
+      document.getElementById("view-" + tab.getAttribute("data-view")).classList.add("active");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  });
+
+  var headers = document.querySelectorAll(".section-header");
+  headers.forEach(function (h) {
+    h.addEventListener("click", function () {
+      var card = h.parentElement;
+      card.classList.toggle("open");
+    });
+  });
+
+  var questions = [
+    { topic: "Very Easy", text: "Which of these is a set?", options: ["{1, 2, 3}", "1, 2, 3", "(1, 2, 3)", "[1, 2, 3]"], answer: 0 },
+    { topic: "Very Easy", text: "What does the symbol ∈ mean?", options: ["is equal to", "is an element of", "is a subset of", "is not equal to"], answer: 1 },
+    { topic: "Very Easy", text: "Which symbol do we use to write the empty set?", options: ["{0}", "∅", "{ }", "Both ∅ and { }"], answer: 3 },
+    { topic: "Very Easy", text: "How many elements are in the set {a, e, i, o, u}?", options: ["3", "4", "5", "6"], answer: 2 },
+    { topic: "Very Easy", text: "What is the union of {1, 2} and {3, 4}?", options: ["{1, 2, 3, 4}", "{1, 2}", "{3, 4}", "{ }"], answer: 0 },
+    { topic: "Very Easy", text: "What is the intersection of {1, 2, 3} and {3, 4, 5}?", options: ["{1, 2, 3, 4, 5}", "{3}", "{1, 2, 4, 5}", "{ }"], answer: 1 },
+    { topic: "Very Easy", text: "Which of these is the set of natural numbers?", options: ["{0, 1, 2, 3, ...}", "{1, 2, 3, 4, ...}", "{..., -1, 0, 1, ...}", "{1, 3, 5, 7, ...}"], answer: 1 },
+    { topic: "Very Easy", text: "If A = {1, 2, 3}, what is n(A)?", options: ["1", "2", "3", "4"], answer: 2 },
+    { topic: "Very Easy", text: "Which of these is a subset of {1, 2, 3}?", options: ["{1, 4}", "{2, 3}", "{4, 5}", "{5}"], answer: 1 },
+    { topic: "Very Easy", text: "What does the symbol ∉ mean?", options: ["is an element of", "is not an element of", "is a subset of", "is equal to"], answer: 1 },
+
+    { topic: "Sets", text: "How many subsets does a set with 3 elements have?", options: ["3", "6", "8", "9"], answer: 2 },
+    { topic: "Sets", text: "How many subsets does a set with 4 elements have?", options: ["8", "12", "16", "20"], answer: 2 },
+    { topic: "Sets", text: "If U = {1, 2, 3, 4, 5} and A = {2, 4}, what is A'?", options: ["{1, 3, 5}", "{2, 4}", "{1, 2, 3, 4, 5}", "{ }"], answer: 0 },
+    { topic: "Sets", text: "If A = {1, 2, 3, 4} and B = {3, 4, 5}, what is A \\ B?", options: ["{5}", "{1, 2}", "{3, 4}", "{1, 2, 5}"], answer: 1 },
+    { topic: "Sets", text: "If A = {1, 2, 3, 4} and B = {3, 4, 5}, what is B \\ A?", options: ["{5}", "{1, 2}", "{3, 4}", "{1, 2, 5}"], answer: 0 },
+    { topic: "Sets", text: "A set with no elements is called the:", options: ["Universal set", "Empty set", "Subset", "Finite set"], answer: 1 },
+    { topic: "Sets", text: "Which of these sets is infinite?", options: ["{1, 2, 3}", "{1, 2, 3, 4, 5}", "{1, 2, 3, ...}", "{a, b, c}"], answer: 2 },
+    { topic: "Sets", text: "If n(A) = 8, n(B) = 5 and n(A ∩ B) = 3, what is n(A ∪ B)?", options: ["13", "10", "16", "11"], answer: 1 },
+    { topic: "Sets", text: "If n(A) = 10, n(B) = 6 and n(A ∪ B) = 14, what is n(A ∩ B)?", options: ["2", "4", "6", "16"], answer: 0 },
+    { topic: "Sets", text: "In a class of 30 students, 18 study Maths, 15 study Science and 8 study both. How many study neither?", options: ["5", "8", "10", "3"], answer: 0 },
+
+    { topic: "Relations", text: "What is an ordered pair?", options: ["Two elements where order does not matter", "Two elements where order matters", "A set with two subsets", "A pair of sets"], answer: 1 },
+    { topic: "Relations", text: "If A = {1, 2} and B = {x, y}, what is A × B?", options: ["{ (1,x), (1,y), (2,x), (2,y) }", "{ (x,1), (y,1), (x,2), (y,2) }", "{1, 2, x, y}", "{ (1,2), (x,y) }"], answer: 0 },
+    { topic: "Relations", text: "If n(A) = 3 and n(B) = 4, how many ordered pairs are in A × B?", options: ["7", "12", "3", "4"], answer: 1 },
+    { topic: "Relations", text: "In the relation R = { (1,2), (3,4), (5,6) }, what is the domain?", options: ["{2, 4, 6}", "{1, 3, 5}", "{1, 2, 3, 4, 5, 6}", "{ }"], answer: 1 },
+    { topic: "Relations", text: "In the relation R = { (1,2), (3,4), (5,6) }, what is the range?", options: ["{2, 4, 6}", "{1, 3, 5}", "{1, 2, 3, 4, 5, 6}", "{ }"], answer: 0 },
+    { topic: "Relations", text: "What is the inverse of R = { (1, 5), (2, 6) }?", options: ["{ (5, 1), (6, 2) }", "{ (1, 5), (2, 6) }", "{ (1, 2), (5, 6) }", "{ }"], answer: 0 },
+    { topic: "Relations", text: "Which relation is a function?", options: ["{ (1,2), (1,3) }", "{ (1,2), (2,3) }", "{ (1,2), (1,2), (1,3) }", "{ (1,2), (2,3), (2,4) }"], answer: 1 },
+    { topic: "Relations", text: "Why is { (1,2), (1,5) } NOT a function?", options: ["Because 1 is paired with two different values", "Because 2 is less than 5", "Because it has only two pairs", "Because it uses brackets"], answer: 0 },
+
+    { topic: "Types", text: "A relation is reflexive if:", options: ["Every element is related to itself", "The reverse of every pair is also present", "Chains complete", "It is a function"], answer: 0 },
+    { topic: "Types", text: "A relation is symmetric if:", options: ["Every element is related to itself", "Whenever (a,b) is present, (b,a) is also present", "Whenever (a,b) and (b,c) are present, (a,c) is present", "It is a subset"], answer: 1 },
+    { topic: "Types", text: "A relation is transitive if:", options: ["Every element relates to itself", "Every pair comes in both directions", "Whenever (a,b) and (b,c) are present, (a,c) is also present", "It has a domain"], answer: 2 },
+    { topic: "Types", text: "An equivalence relation must be:", options: ["Only reflexive", "Only symmetric", "Reflexive, symmetric and transitive", "Only transitive"], answer: 2 },
+    { topic: "Types", text: "Is R = { (1,1), (2,2), (3,3) } reflexive on {1, 2, 3}?", options: ["Yes", "No, because it has only three pairs", "No, because 1 is not related to 2", "Cannot tell"], answer: 0 },
+    { topic: "Types", text: "Is R = { (1,2), (2,1), (2,3), (3,2) } symmetric?", options: ["Yes, each pair has its reverse", "No, (1,3) is missing", "No, (1,1) is missing", "Cannot tell"], answer: 0 },
+    { topic: "Types", text: "Is R = { (1,2), (2,3), (1,3) } transitive?", options: ["Yes, the chain completes with (1,3)", "No, because 1 is not related to 1", "No, because there is no (3,1)", "Cannot tell"], answer: 0 },
+
+    { topic: "Venn", text: "In a Venn diagram of two sets, the overlapping region represents:", options: ["A ∪ B", "A ∩ B", "A \\ B", "A'"], answer: 1 },
+    { topic: "Venn", text: "The region inside the universal set but outside both circles represents:", options: ["A ∪ B", "A ∩ B", "(A ∪ B)'", "A \\ B"], answer: 2 },
+    { topic: "Venn", text: "In a survey of 50 people, 30 like tea, 25 like coffee and 15 like both. How many like at least one drink?", options: ["40", "55", "45", "35"], answer: 0 },
+    { topic: "Venn", text: "Using the same survey, how many like neither tea nor coffee?", options: ["5", "10", "15", "20"], answer: 1 }
+  ];
+
+  var quizStart = document.getElementById("quizStart");
+  var quizArea = document.getElementById("quizArea");
+  var startBtn = document.getElementById("startQuizBtn");
+  var questionsEl = document.getElementById("questions");
+  var checkBtn = document.getElementById("checkBtn");
+  var resetBtn = document.getElementById("resetBtn");
+  var scoreBanner = document.getElementById("scoreBanner");
+  var scoreBig = document.getElementById("scoreBig");
+  var scoreMsg = document.getElementById("scoreMsg");
+  var progressText = document.getElementById("progressText");
+  var progressBar = document.getElementById("progressBar");
+
+  var selections = {};
+  var checked = false;
+
+  function buildQuiz() {
+    questionsEl.innerHTML = "";
+    selections = {};
+    checked = false;
+    scoreBanner.classList.remove("show");
+    updateProgress();
+
+    questions.forEach(function (q, qi) {
+      var card = document.createElement("div");
+      card.className = "q-card";
+
+      var meta = document.createElement("div");
+      meta.className = "meta";
+      meta.innerHTML =
+        '<span class="qnum">Question ' + (qi + 1) + "</span>" +
+        '<span class="topic-tag">' + q.topic + "</span>";
+      card.appendChild(meta);
+
+      var qtext = document.createElement("div");
+      qtext.className = "qtext";
+      qtext.textContent = q.text;
+      card.appendChild(qtext);
+
+      var opts = document.createElement("div");
+      opts.className = "q-options";
+
+      q.options.forEach(function (opt, oi) {
+        var optEl = document.createElement("div");
+        optEl.className = "q-option";
+        optEl.setAttribute("data-q", qi);
+        optEl.setAttribute("data-o", oi);
+
+        var letter = document.createElement("span");
+        letter.className = "letter";
+        letter.textContent = String.fromCharCode(65 + oi);
+
+        var textSpan = document.createElement("span");
+        textSpan.textContent = opt;
+
+        optEl.appendChild(letter);
+        optEl.appendChild(textSpan);
+
+        optEl.addEventListener("click", function () {
+          if (checked) return;
+          var prev = opts.querySelector(".selected");
+          if (prev) prev.classList.remove("selected");
+          optEl.classList.add("selected");
+          selections[qi] = oi;
+          updateProgress();
+        });
+
+        opts.appendChild(optEl);
+      });
+
+      card.appendChild(opts);
+      questionsEl.appendChild(card);
+    });
+  }
+
+  function updateProgress() {
+    var answered = Object.keys(selections).length;
+    var total = questions.length;
+    progressText.textContent = answered + " of " + total + " answered";
+    var pct = total === 0 ? 0 : (answered / total) * 100;
+    progressBar.style.width = pct + "%";
+  }
+
+  function checkAnswers() {
+    checked = true;
+    var correct = 0;
+    var cards = questionsEl.querySelectorAll(".q-card");
+
+    questions.forEach(function (q, qi) {
+      var card = cards[qi];
+      var optEls = card.querySelectorAll(".q-option");
+      var chosen = selections[qi];
+
+      optEls.forEach(function (optEl, oi) {
+        optEl.classList.remove("correct", "wrong", "selected");
+        if (oi === q.answer) {
+          optEl.classList.add("correct");
+        } else if (oi === chosen && chosen !== q.answer) {
+          optEl.classList.add("wrong");
+        }
+      });
+
+      if (chosen === q.answer) {
+        correct++;
+      }
+    });
+
+    scoreBig.textContent = correct + " / " + questions.length;
+    var pct = Math.round((correct / questions.length) * 100);
+    var msg = "";
+    if (pct >= 80) msg = "Excellent work. You have a strong grasp of sets and relations.";
+    else if (pct >= 60) msg = "Good effort. Review the sections you missed and try again.";
+    else if (pct >= 40) msg = "Fair. Go back to the study portal and read Sections 1 and 2 slowly.";
+    else msg = "Do not worry. Read Section 1 again, then answer the first ten questions and try again.";
+    scoreMsg.textContent = pct + "% correct. " + msg;
+    scoreBanner.classList.add("show");
+    scoreBanner.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
+  function resetQuiz() {
+    buildQuiz();
+    scoreBanner.classList.remove("show");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  startBtn.addEventListener("click", function () {
+    quizStart.style.display = "none";
+    quizArea.style.display = "block";
+    buildQuiz();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  checkBtn.addEventListener("click", checkAnswers);
+  resetBtn.addEventListener("click", resetQuiz);
+
+})();
+</script>
+</body>
+</html>
